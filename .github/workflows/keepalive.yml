@@ -1,0 +1,15 @@
+# Необязательно: не даёт бесплатному Render «засыпать» днём (иначе первый запрос после
+# 15 минут простоя ждёт ~1 минуту). Включается, только если в репозитории задана
+# переменная APP_URL (Settings → Secrets and variables → Actions → Variables).
+# 07:00–23:59 по Москве — укладывается в 750 бесплатных часов Render в месяц.
+name: keep-alive
+on:
+  schedule:
+    - cron: "*/10 4-20 * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    if: ${{ vars.APP_URL != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS --max-time 90 "${{ vars.APP_URL }}/api/ping" || true

@@ -1,0 +1,8 @@
+node_modules/
+frontend/dist/
+*.exe
+/backend/lifehub
+.env
+.DS_Store
+*.tsbuildinfo
+/backup.sql
