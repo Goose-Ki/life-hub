@@ -1,0 +1,3 @@
+# Скрипты для Linux-контейнеров — всегда с LF
+*.sh text eol=lf
+*.sql text eol=lf

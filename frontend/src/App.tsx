@@ -1,6 +1,9 @@
-import { Link, NavLink, Navigate, Route, Routes } from 'react-router-dom'
+import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider, useAuth } from './components/auth'
-import { Icon } from './components/ui'
+import { useState } from 'react'
+import { MobileNav } from './components/MobileNav'
+import { QuickAdd } from './components/QuickAdd'
+import { Icon, Toaster } from './components/ui'
 import BrainPage from './components/brain/BrainView'
 import CalendarPage from './pages/Calendar'
 import FoodPage from './pages/Food'
@@ -28,6 +31,7 @@ export default function App() {
 
 function Shell() {
   const { user } = useAuth()
+  const [adding, setAdding] = useState(false)
   return (
     <div className="app">
       <nav className="sidebar" aria-label="Разделы">
@@ -35,6 +39,7 @@ function Shell() {
           <span className="brand-logo"><Icon name="check" size={16} /></span>
           Life Hub
         </div>
+        <button className="btn primary sidebar-add" onClick={() => setAdding(true)}><Icon name="plus" size={16} /> Добавить</button>
         {NAV.map((n) => (
           <NavLink key={n.to} to={n.to} end={n.to === '/'} className="nav-link">
             <Icon name={n.icon} size={20} />
@@ -46,7 +51,6 @@ function Shell() {
           <span className="user-name">{user.name}</span>
         </NavLink>
       </nav>
-      <Link to="/profile" className="mobile-avatar avatar" aria-label="Профиль">{user.name.slice(0, 1).toUpperCase()}</Link>
       <main className="content">
         <Routes>
           <Route path="/" element={<TodayPage />} />
@@ -59,6 +63,9 @@ function Shell() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <MobileNav />
+      <Toaster />
+      {adding && <QuickAdd onClose={() => setAdding(false)} />}
     </div>
   )
 }

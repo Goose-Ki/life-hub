@@ -6,8 +6,9 @@ import { addDays, groupBy, relativeDay, today, toISO } from '../utils'
 // Текущее время в формате ЧЧ:ММ.
 export const nowTime = () => new Date().toTimeString().slice(0, 5)
 
-export function FoodForm({ entry, defaultDate, onSaved, onCancel, compact = false }: {
-  entry?: FoodEntry; defaultDate?: string; onSaved: () => void; onCancel?: () => void; compact?: boolean
+// quick — для быстрого добавления с телефона: без даты (сегодня), сразу фокус на тексте.
+export function FoodForm({ entry, defaultDate, onSaved, onCancel, compact = false, quick = false }: {
+  entry?: FoodEntry; defaultDate?: string; onSaved: () => void; onCancel?: () => void; compact?: boolean; quick?: boolean
 }) {
   const [date, setDate] = useState(entry?.date ?? defaultDate ?? today())
   const [time, setTime] = useState(entry?.time ?? nowTime())
@@ -27,7 +28,7 @@ export function FoodForm({ entry, defaultDate, onSaved, onCancel, compact = fals
   return (
     <form className="form" onSubmit={submit}>
       <div className="row">
-        {!compact && (
+        {!compact && !quick && (
           <label>Дата<input type="date" required value={date} onChange={(e) => setDate(e.target.value)} /></label>
         )}
         <label>Время
@@ -38,7 +39,7 @@ export function FoodForm({ entry, defaultDate, onSaved, onCancel, compact = fals
         </label>
       </div>
       <label>Что съел
-        <textarea rows={compact ? 2 : 3} required value={content} onChange={(e) => setContent(e.target.value)}
+        <textarea rows={compact ? 2 : 3} required autoFocus={quick} value={content} onChange={(e) => setContent(e.target.value)}
           placeholder="Например: овсянка на молоке, банан, кофе с молоком"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) (e.currentTarget.form as HTMLFormElement).requestSubmit()

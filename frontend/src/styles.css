@@ -100,17 +100,7 @@ a { color: var(--accent); text-decoration: none; }
 
 @media (max-width: 760px) {
   .app { flex-direction: column; }
-  .sidebar {
-    position: fixed; top: auto; bottom: 0; left: 0; right: 0; z-index: 20;
-    width: auto; height: auto; flex-direction: row; justify-content: space-around;
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
-    border-right: 0; border-top: 1px solid var(--border);
-  }
-  .brand { display: none; }
-  .nav-link { flex-direction: column; gap: 2px; padding: 6px 4px; font-size: 11px; flex: 1; text-align: center; }
-  .nav-link.active { background: none; }
-  .content { padding: 18px 16px 96px; }
-  h1 { font-size: 22px; }
+  .sidebar { display: none; }
 }
 
 /* ---------- Cards ---------- */
@@ -549,11 +539,6 @@ a.btn.primary:hover { color: var(--accent-text); }
 .user-link { margin-top: auto; }
 .user-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mobile-avatar { display: none; }
-@media (max-width: 760px) {
-  .user-link { display: none; }
-  .mobile-avatar { display: inline-grid; position: fixed; top: 14px; right: 16px; z-index: 15; width: 34px; height: 34px; box-shadow: var(--shadow); }
-  .page-head { padding-right: 44px; }
-}
 
 .profile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
 @media (max-width: 900px) { .profile-grid { grid-template-columns: 1fr; } .profile-grid .span-2 { grid-column: auto; } }
@@ -566,3 +551,155 @@ a.btn.primary:hover { color: var(--accent-text); }
 .invite-list li:last-child { border-bottom: 0; }
 .invite-list code { font-size: 13px; background: var(--surface-2); padding: 2px 6px; border-radius: 6px; }
 .install-steps { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+
+/* =====================================================================
+   Телефон: нижняя панель, кнопка «+», шторки, крупные элементы
+   ===================================================================== */
+html { -webkit-tap-highlight-color: transparent; }
+button, a, input, select, textarea, label { touch-action: manipulation; }
+.sidebar-add { margin: 0 4px 12px; }
+.mobile-nav, .mobile-only { display: none; }
+body.modal-open { overflow: hidden; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); z-index: 80;
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 999px;
+  font-weight: 600; font-size: 14px; box-shadow: var(--shadow-lg); animation: toast-in .25s ease-out;
+}
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 10px); } }
+
+.sheet-grip { display: none; }
+
+/* Быстрое добавление */
+.qa-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.qa-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left;
+  padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface-2); cursor: pointer;
+  transition: transform .1s, border-color .15s;
+}
+.qa-btn:active { transform: scale(.97); }
+.qa-btn:hover { border-color: var(--qc); }
+.qa-icon { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; color: var(--qc);
+  background: color-mix(in srgb, var(--qc) 15%, transparent); margin-bottom: 6px; }
+.qa-label { font-weight: 700; font-size: 16px; }
+.qa-hint { font-size: 13px; color: var(--muted); }
+.qa-food { --qc: var(--food); } .qa-task { --qc: var(--task); } .qa-study { --qc: var(--study); } .qa-workout { --qc: var(--workout); }
+
+/* «Ещё» */
+.more-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.more-item {
+  display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 14px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface-2); font-weight: 600; font-size: 15px; text-align: left; min-width: 0;
+}
+.more-item > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.more-item.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.more-icon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--surface); flex-shrink: 0; }
+.more-item .avatar { width: 36px; height: 36px; }
+
+@media (max-width: 760px) {
+  .mobile-only { display: block; }
+  button.mobile-only, .icon-btn.mobile-only { display: inline-grid; }
+  .desktop-only { display: none !important; }
+
+  /* Нижняя панель */
+  .mobile-nav {
+    display: grid; grid-template-columns: repeat(5, 1fr); align-items: end;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: saturate(1.6) blur(16px); -webkit-backdrop-filter: saturate(1.6) blur(16px);
+    border-top: 1px solid var(--border);
+  }
+  .mnav-link {
+    display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px;
+    color: var(--muted); font-size: 11px; font-weight: 600; border: 0; background: none; cursor: pointer;
+    min-height: 50px; justify-content: center;
+  }
+  .mnav-link.active { color: var(--accent); }
+  .mnav-fab {
+    justify-self: center; width: 56px; height: 56px; margin-top: -22px; border-radius: 18px; border: 0; cursor: pointer;
+    display: grid; place-items: center; color: #fff;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 45%, transparent);
+    transition: transform .1s;
+  }
+  .mnav-fab:active { transform: scale(.93); }
+
+  /* Контент: отступы под «чёлку» и под нижнюю панель */
+  .content { padding: calc(14px + env(safe-area-inset-top)) 14px calc(100px + env(safe-area-inset-bottom)); }
+  .page { gap: 12px; }
+  .page-head { gap: 10px; margin-bottom: 0; }
+  h1 { font-size: 26px; }
+  .card { padding: 14px; border-radius: 16px; }
+  .card-head { margin-bottom: 8px; }
+  .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
+
+  /* Крупные цели для пальца и без автозума iOS */
+  input, select, textarea { font-size: 16px; min-height: 46px; padding: 10px 12px; border-radius: 12px; }
+  textarea { min-height: 84px; }
+  .btn { min-height: 46px; padding: 10px 18px; border-radius: 12px; font-size: 15px; }
+  .btn.small { min-height: 36px; padding: 6px 12px; font-size: 14px; }
+  .icon-btn { width: 40px; height: 40px; }
+  .check { width: 26px; height: 26px; border-radius: 8px; margin-top: 0; }
+  .task-row { padding: 10px 0; align-items: center; }
+  .task-title { font-size: 16px; }
+  .entry { padding: 12px 0; }
+  .entry-text { font-size: 15px; }
+  .chip { padding: 8px 14px; font-size: 14px; }
+  .form { gap: 14px; }
+  .form-actions .btn.primary { flex: 1; }
+  .quick-add input { min-height: 46px; }
+  .row > label { min-width: 0; flex: 1 1 140px; }
+  .row > label:has(.input-with-btn) { flex-basis: 100%; }
+  .input-with-btn input { min-width: 0; }
+  .input-with-btn .btn { flex-shrink: 0; }
+
+  /* Вкладки — прокручиваются по горизонтали */
+  .tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { white-space: nowrap; padding: 8px 14px; min-height: 38px; }
+
+  /* Шторка снизу вместо окна */
+  .modal-backdrop { align-items: end; padding: 0; place-items: end stretch; animation: fade .15s ease-out; }
+  .modal {
+    width: 100%; max-height: 92vh; border-radius: 22px 22px 0 0;
+    padding: 6px 16px calc(18px + env(safe-area-inset-bottom));
+    animation: sheet-up .28s cubic-bezier(.2, .8, .2, 1);
+  }
+  .sheet-grip { display: block; width: 42px; height: 5px; border-radius: 3px; background: var(--border); margin: 4px auto 10px; touch-action: none; }
+  .modal .card-head { touch-action: none; }
+
+  /* «Сегодня»: главное сверху */
+  .today .page-head h1 { font-size: 28px; }
+  .today .date-nav { width: 100%; }
+  .today .date-nav input { flex: 1; text-align: center; }
+  .stats { display: flex; overflow-x: auto; gap: 8px; margin: 0 -14px; padding: 0 14px; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .stats::-webkit-scrollbar { display: none; }
+  .stat { flex: 0 0 auto; min-width: 112px; padding: 10px 14px; border-radius: 14px; scroll-snap-align: start; }
+  .stat-value { font-size: 19px; }
+  .card .stats { margin: 0 0 12px; padding: 0; }
+  .dashboard { gap: 12px; }
+  .dash-classes { order: 1; } .dash-tasks { order: 2; } .dash-food { order: 3; }
+  .dash-workout { order: 4; } .dash-study { order: 5; } .dash-prod { order: 6; } .dash-brain { order: 7; }
+  .big-number { font-size: 26px; }
+
+  /* Календарь и учёба */
+  .month-grid { gap: 3px; }
+  .day { border-radius: 8px; min-height: 46px; }
+  .week-grid { grid-template-columns: 1fr; }
+  .topic-grid, .book-grid { grid-template-columns: 1fr; }
+  .profile-grid { gap: 12px; }
+}
+
+@keyframes sheet-up { from { transform: translateY(100%); } }
+
+/* Нет наведения (тач) — кнопки действий видны всегда */
+@media (hover: none) {
+  .entry-actions { opacity: 1; }
+}
+
+/* Установленное приложение (с главного экрана) */
+@media (display-mode: standalone) and (max-width: 760px) {
+  .content { padding-top: calc(18px + env(safe-area-inset-top)); }
+}
